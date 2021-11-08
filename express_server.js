@@ -40,10 +40,12 @@ app.get("/urls.json", (req, res) => {
 // /urls
 // Get all URLs
 app.get("/urls", (req, res) => {
+  const urls = urlsForUser(req.cookies.user_id);
   const templateVars = {
-    urls: urlDatabase,
+    urls,
     user: users[req.cookies.user_id]
   };
+
   res.render("urls_index", templateVars);
 });
 
@@ -74,23 +76,51 @@ app.post("/urls", (req, res) => {
 
 // Get URL from id
 app.get("/urls/:shortURL", (req, res) => {
+  const user = users[req.cookies.user_id];
+  const url = urlDatabase[req.params.shortURL];
+
+  // redirect if not logged in
+  if (!user) {
+    res.redirect("/login", 403);
+    return;
+  }
+
+  // url doesn't belong to user
+  if (req.cookies.user_id !== url.userID) {
+    res.redirect("/urls", 403);
+    return;
+  }
+
   const templateVars = {
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    user: users[req.cookies.user_id]
+    longURL: url.longURL,
+    user
   };
   res.render("urls_show", templateVars);
 });
 
 // Update URL
 app.post("/urls/:id", (req, res) => {
-  urlDatabase[req.params.id].longURL = req.body.newURL;
-  res.redirect(`/urls/${req.params.id}`);
+  const url = urlDatabase[req.params.id];
+
+  if (url.userID === req.cookies.user_id) {
+    urlDatabase[req.params.id].longURL = req.body.newURL;
+    res.redirect(`/urls/${req.params.id}`);
+  } else {
+    res.status(403).send("Not authorized");
+  }
 });
 
 // Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  const url = urlDatabase[req.params.shortURL];
+
+  if (url.userID === req.cookies.user_id) {
+    delete urlDatabase[req.params.shortURL];
+  } else {
+    return res.status(403).send("Not authorized");
+  }
+
   res.redirect("/urls");
 });
 
@@ -202,4 +232,14 @@ const getUser = (email) => {
     }
   }
   return undefined;
+};
+
+const urlsForUser = (id) => {
+  let result = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === id) {
+      result[url] = urlDatabase[url];
+    }
+  }
+  return result;
 };
