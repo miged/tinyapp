@@ -44,13 +44,22 @@ app.get("/urls", (req, res) => {
 // Create URL
 app.get("/urls/new", (req, res) => {
   const templateVars = { user: users[req.cookies.user_id] };
-  res.render("urls_new", templateVars);
+
+  if (!templateVars.user) {
+    res.redirect("/login");
+  } else {
+    res.render("urls_new", templateVars);
+  }
 });
 
 app.post("/urls", (req, res) => {
-  const shortUrl = generateRandomString();
-  urlDatabase[shortUrl] = req.body.longURL;
-  res.redirect(`/urls/${shortUrl}`);
+  if (!req.cookies.user_id) {
+    res.status(403).send("Not authorized");
+  } else {
+    const shortUrl = generateRandomString();
+    urlDatabase[shortUrl] = req.body.longURL;
+    res.redirect(`/urls/${shortUrl}`);
+  }
 });
 
 // Get URL from id
