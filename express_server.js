@@ -106,13 +106,23 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
+  let { email, password } = req.body;
+
+  // email/password is empty
+  if (!email || !password) {
+    res.status(400).send("Email/password not found");
+    return;
+  }
+
+  // user already exists
+  if (getUser(email)) {
+    res.status(400).send("User already exists");
+    return;
+  }
+
   // add user to database
   const id = generateRandomString();
-  users[id] = {
-    id,
-    email: req.body.email,
-    password: req.body.password
-  };
+  users[id] = { id, email, password };
 
   // set cookie
   res.cookie('user_id', id);
@@ -120,6 +130,7 @@ app.post('/register', (req, res) => {
 
   res.redirect("/urls");
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -134,4 +145,13 @@ const generateRandomString = (length = 6) => {
   }
 
   return str;
+};
+
+const getUser = (email) => {
+  for (let user in users) {
+    if (users[user].email === email) {
+      return user;
+    }
+  }
+  return undefined;
 };
