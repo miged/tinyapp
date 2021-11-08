@@ -16,11 +16,8 @@
         <button class="btn btn-danger" type="submit">Logout</button>
       </form>
     <% } else { %>
-      <form class="form-inline my-lg-0" action="/login" method="post">
-        <input class="form-control mr-2" type="text" name="username" placeholder="Username">
-        <button class="btn btn-primary mr-2" type="submit">Login</button>
-      </form>
-      <a href="/register" class="btn btn-primary">Register</a>
+      <a class="btn btn-primary mr-2" href="/login">Log in</a>
+      <a class="btn btn-primary" href="/register">Register</a>
     <% } %>
   </nav>
 </header>

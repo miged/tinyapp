@@ -85,9 +85,19 @@ app.get("/u/:shortURL", (req, res) => {
 
 // /login
 // Log in with username
+app.get('/login', (req, res) => {
+  const templateVars = { user: users[req.cookies.user_id] };
+  res.render("login", templateVars);
+});
+
 app.post('/login', (req, res) => {
-  const {username} = req.body;
-  res.cookie('username', username);
+  const {email, password} = req.body;
+  let user = getUser(email);
+
+  if (user && user.password === password) {
+    res.cookie('user_id', user.id);
+  }
+
   res.redirect("/urls");
 });
 
@@ -150,7 +160,7 @@ const generateRandomString = (length = 6) => {
 const getUser = (email) => {
   for (let user in users) {
     if (users[user].email === email) {
-      return user;
+      return users[user];
     }
   }
   return undefined;
