@@ -10,7 +10,7 @@ app.use(cookieParser());
 
 const urlDatabase = {
   b6UTxQ: {
-    longURL: "https://www.tsn.ca",
+    longURL: "https://lighthouselabs.ca",
     userID: "aJ48lW"
   },
   i3BoGr: {
@@ -97,8 +97,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // /u
 app.get("/u/:shortURL", (req, res) => {
-  const longUrl = urlDatabase[req.params.shortURL].longURL;
-  res.redirect(longUrl);
+  const url = urlDatabase[req.params.shortURL];
+  if (!url) {
+    res.status(404).send("Link not found");
+  }
+
+  res.redirect(url.longURL);
 });
 
 
