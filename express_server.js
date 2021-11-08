@@ -17,11 +17,13 @@ app.get("/urls.json", (req, res) => {
 });
 
 // /urls
+// Get all URLs
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
 
+// Create URL
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
@@ -32,12 +34,13 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortUrl}`);
 });
 
+// Get URL from id
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
-// Edit URL
+// Update URL
 app.post("/urls/:id", (req, res) => {
   urlDatabase[req.params.id] = req.body.newURL;
   res.redirect(`/urls/${req.params.id}`);
