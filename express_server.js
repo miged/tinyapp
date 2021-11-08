@@ -37,10 +37,18 @@ app.get("/urls/:shortURL", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
+// Edit URL
+app.post("/urls/:id", (req, res) => {
+  urlDatabase[req.params.id] = req.body.newURL;
+  res.redirect(`/urls/${req.params.id}`);
+});
+
+// Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
 });
+
 
 // /u
 app.get("/u/:shortURL", (req, res) => {
