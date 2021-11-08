@@ -106,7 +106,7 @@ app.post('/login', (req, res) => {
 
 // /logout
 // Log out the user
-app.post('/logout', (req, res) => {
+app.get('/logout', (req, res) => {
   res.clearCookie('user_id');
   res.redirect("/urls");
 });

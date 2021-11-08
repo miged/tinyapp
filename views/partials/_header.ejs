@@ -10,14 +10,14 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if (user) { %>
-      <form class="form-inline" action="/logout" method="post">
-        <div class="mr-4">Logged in as <%= user.email %>!</div>
-        <button class="btn btn-danger" type="submit">Logout</button>
-      </form>
-    <% } else { %>
-      <a class="btn btn-primary mr-2" href="/login">Log in</a>
-      <a class="btn btn-primary" href="/register">Register</a>
-    <% } %>
+    <div class="navbar-nav">
+      <% if (user) { %>
+        <div class="mr-4 my-2">Logged in as <%= user.email %>!</div>
+        <a class="nav-item nav-link" href="/logout">Logout</a>
+      <% } else { %>
+        <a class="nav-item nav-link" href="/login">Log in</a>
+        <a class="nav-item nav-link" href="/register">Register</a>
+      <% } %>
+    </div>
   </nav>
 </header>
