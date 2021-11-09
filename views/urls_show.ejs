@@ -9,22 +9,21 @@
 </head>
 <%- include('partials/_header') %>
 <body>
-  <div class="card text-center">
-    <div class="card-header"></div>
-    <div class="card-body">
-      <h5 class="card-title">TinyURL for: <%= url.longURL %></h5>
-      <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
-      <p class="card-text">Visits: <%= url.visits %></p>
-      <p class="card-text">Visit Dates:<br>
-        <% for( let date of url.visitDates ) { %>
-          <%= date %><br>
-        <% } %>
-      </p>
-    </div>
-
-    <div class="card-footer">
-      <div class="mx-auto card-body w-25 p-3">
-        <h4 class="card-title">Edit</h3>
+  <h3 class="text-center mt-4">TinyURL for: <%= url.longURL %></h3>
+  <div class="container mt-4">
+    <div class="row text-center">
+      <div class="col">
+        <h4>Info</h4>
+        <p>Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
+        <p>Visits: <%= url.visits %></p>
+        <p>Visit Dates:<br>
+          <% for( let date of url.visitDates ) { %>
+            <%= date %><br>
+          <% } %>
+        </p>
+      </div>
+      <div class="col">
+        <h4>Edit</h4>
         <form method="POST" action="/urls/<%= shortURL %>">
           <div class="form-group">
             New URL: <input class="form-control" name="newURL" id="editUrl">
