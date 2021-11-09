@@ -26,6 +26,7 @@ const urlDatabase = {
     userID: 'aJ48lW',
     visits: 34,
     uniqueVisits: 20,
+    dateCreated: new Date(),
     visitDates: [],
   },
   i3BoGr: {
@@ -33,14 +34,15 @@ const urlDatabase = {
     userID: 'aJ48lW',
     visits: 153,
     uniqueVisits: 130,
+    dateCreated: new Date(),
     visitDates: [],
   },
 };
 
 // User Database
 const users = {
-  userRandomID: {
-    id: 'userRandomID',
+  aJ48lW: {
+    id: 'aJ48lW',
     email: 'user@example.com',
     password: bcrypt.hashSync('purple-monkey-dinosaur'),
   },
@@ -87,7 +89,7 @@ app.get('/urls/new', (req, res) => {
 app.post('/urls', (req, res) => {
   if (!req.session.user_id) {
     // send error if not logged in
-    res.status(403).send('Not authorized');
+    res.status(403).send('Please log in to create a url.');
   } else {
     // create new url
     const shortUrl = generateRandomString();
@@ -133,7 +135,7 @@ app.post('/urls/:id', (req, res) => {
 
   if (url.userID === req.session.user_id) {
     urlDatabase[req.params.id].longURL = req.body.newURL;
-    res.redirect(`/urls/${req.params.id}`);
+    res.redirect(`/urls`);
   } else {
     res.status(403).send('Not authorized');
   }
@@ -187,10 +189,8 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
   let user = getUser(email, users);
 
-  if (!user) {
-    res.status(403).send('User not found');
-  } else if (!bcrypt.compareSync(password, user.password)) {
-    res.status(403).send('Wrong password');
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    res.status(403).send('Email and password do not match a user.');
   } else {
     // set cookie
     req.session.user_id = user.id;
@@ -223,13 +223,13 @@ app.post('/register', (req, res) => {
 
   // email/password is empty
   if (!email || !password) {
-    res.status(400).send('Email/password not found');
+    res.status(400).send('Email/password empty');
     return;
   }
 
   // user already exists
   if (getUser(email, users)) {
-    res.status(400).send('User already exists');
+    res.status(400).send('Email already exists');
     return;
   }
 
