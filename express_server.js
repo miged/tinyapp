@@ -46,6 +46,14 @@ const users = {
   },
 };
 
+app.get('/', (req, res) => {
+  if (users[req.session.user_id]) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
+});
+
 
 // Get URL database in JSON format
 app.get('/urls.json', (req, res) => {
