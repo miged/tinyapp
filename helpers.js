@@ -28,5 +28,4 @@ const urlsForUser = (id, database) => {
   return result;
 };
 
-
 module.exports = { getUser, generateRandomString, urlsForUser };
