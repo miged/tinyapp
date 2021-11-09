@@ -16,7 +16,7 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
-const { getUser } = require('./helpers');
+const { getUser, generateRandomString, urlsForUser } = require('./helpers');
 
 const urlDatabase = {
   b6UTxQ: {
@@ -45,7 +45,7 @@ app.get("/urls.json", (req, res) => {
 // /urls
 // Get all URLs
 app.get("/urls", (req, res) => {
-  const urls = urlsForUser(req.session.user_id);
+  const urls = urlsForUser(req.session.user_id, urlDatabase);
   const templateVars = {
     urls,
     user: users[req.session.user_id]
@@ -219,24 +219,3 @@ app.post('/register', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-const generateRandomString = (length = 6) => {
-  let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  let str = '';
-  for (let i = 0; i < length; i++) {
-    str += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-
-  return str;
-};
-
-const urlsForUser = (id) => {
-  let result = {};
-  for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === id) {
-      result[url] = urlDatabase[url];
-    }
-  }
-  return result;
-};
