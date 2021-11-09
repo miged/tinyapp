@@ -16,6 +16,8 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
 
+const { getUser } = require('./helpers');
+
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://lighthouselabs.ca",
@@ -154,7 +156,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', (req, res) => {
   const {email, password} = req.body;
-  let user = getUser(email);
+  let user = getUser(email, users);
 
   if (!user) {
     res.status(403).send("User not found");
@@ -196,7 +198,7 @@ app.post('/register', (req, res) => {
   }
 
   // user already exists
-  if (getUser(email)) {
+  if (getUser(email, users)) {
     res.status(400).send("User already exists");
     return;
   }
@@ -227,15 +229,6 @@ const generateRandomString = (length = 6) => {
   }
 
   return str;
-};
-
-const getUser = (email) => {
-  for (let user in users) {
-    if (users[user].email === email) {
-      return users[user];
-    }
-  }
-  return undefined;
 };
 
 const urlsForUser = (id) => {
