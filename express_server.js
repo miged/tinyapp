@@ -113,6 +113,11 @@ app.get('/urls/:shortURL', (req, res) => {
     return res.redirect('/login', 403);
   }
 
+  // check if url exists
+  if (!url) {
+    return res.redirect('/urls', 404);
+  }
+
   // check if url doesn't belong to user
   if (req.session.user_id !== url.userID) {
     return res.redirect('/urls', 403);
