@@ -26,16 +26,16 @@ const urlDatabase = {
     userID: 'aJ48lW',
     visits: 34,
     uniqueVisits: 20,
-    dateCreated: new Date(),
     visitDates: [],
+    dateCreated: new Date(),
   },
   i3BoGr: {
     longURL: 'https://www.google.ca',
     userID: 'aJ48lW',
     visits: 153,
     uniqueVisits: 130,
-    dateCreated: new Date(),
     visitDates: [],
+    dateCreated: new Date(),
   },
 };
 
@@ -98,6 +98,7 @@ app.post('/urls', (req, res) => {
       userID: req.session.user_id,
       visits: 0,
       visitDates: [],
+      dateCreated: dayjs().format('YYYY-MM-DD hh:mm:ss A')
     };
 
     res.redirect(`/urls/${shortUrl}`);
