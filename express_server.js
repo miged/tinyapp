@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session');
+const dayjs = require('dayjs');
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -23,10 +24,16 @@ const urlDatabase = {
   b6UTxQ: {
     longURL: 'https://lighthouselabs.ca',
     userID: 'aJ48lW',
+    visits: 34,
+    uniqueVisits: 20,
+    visitDates: [],
   },
   i3BoGr: {
     longURL: 'https://www.google.ca',
     userID: 'aJ48lW',
+    visits: 153,
+    uniqueVisits: 130,
+    visitDates: [],
   },
 };
 
@@ -74,10 +81,13 @@ app.post('/urls', (req, res) => {
     // send error if not logged in
     res.status(403).send('Not authorized');
   } else {
+    // create new url
     const shortUrl = generateRandomString();
     urlDatabase[shortUrl] = {
       longURL: req.body.longURL,
       userID: req.session.user_id,
+      visits: 0,
+      visitDates: [],
     };
 
     res.redirect(`/urls/${shortUrl}`);
@@ -103,7 +113,7 @@ app.get('/urls/:shortURL', (req, res) => {
 
   const templateVars = {
     shortURL: req.params.shortURL,
-    longURL: url.longURL,
+    url,
     user,
   };
   res.render('urls_show', templateVars);
@@ -139,7 +149,15 @@ app.get('/u/:shortURL', (req, res) => {
   const url = urlDatabase[req.params.shortURL];
   if (!url) {
     res.status(404).send('Link not found');
+    return;
   }
+
+  // increment number of visits
+  url.visits += 1;
+
+  // keep track of date visited
+  const now = dayjs().format('YYYY-MM-DD hh:mm:ss A');
+  url.visitDates.push(now);
 
   res.redirect(url.longURL);
 });
@@ -166,6 +184,7 @@ app.post('/login', (req, res) => {
   } else if (!bcrypt.compareSync(password, user.password)) {
     res.status(403).send('Wrong password');
   } else {
+    // set cookie
     req.session.user_id = user.id;
     res.redirect('/urls');
   }
