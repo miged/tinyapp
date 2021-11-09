@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override')
 const dayjs = require('dayjs');
 const app = express();
 const PORT = 8080; // default port 8080
@@ -18,6 +19,8 @@ app.use(
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   })
 );
+// override with POST having ?_method=DELETE
+app.use(methodOverride('_method'))
 
 // URL Database
 const urlDatabase = {
@@ -26,17 +29,10 @@ const urlDatabase = {
     userID: 'aJ48lW',
     visits: 34,
     uniqueVisits: 20,
+    uniqueVisitors: [],
     visitDates: [],
     dateCreated: new Date(),
-  },
-  i3BoGr: {
-    longURL: 'https://www.google.ca',
-    userID: 'aJ48lW',
-    visits: 153,
-    uniqueVisits: 130,
-    visitDates: [],
-    dateCreated: new Date(),
-  },
+  }
 };
 
 // User Database
@@ -129,7 +125,7 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 // Update URL
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   const url = urlDatabase[req.params.id];
 
   // check if url belongs to current user
@@ -142,7 +138,7 @@ app.post('/urls/:id', (req, res) => {
 });
 
 // Delete URL
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL', (req, res) => {
   const url = urlDatabase[req.params.shortURL];
 
   // check if url belongs to current user

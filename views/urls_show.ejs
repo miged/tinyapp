@@ -9,7 +9,7 @@
 </head>
 <%- include('partials/_header') %>
 <body>
-  <h3 class="text-center mt-4">TinyURL for: <%= url.longURL %></h3>
+  <h3 class="text-center mt-4">TinyURL for: <a href=<%= url.longURL %>><%= url.longURL %></a></h3>
   <div class="container mt-4">
     <div class="row">
       <div class="col">
@@ -17,15 +17,27 @@
         <p>Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
         <p>Date Created: <%= url.dateCreated %></p>
         <p>Visits: <%= url.visits %></p>
-        <p>Visit Dates:<br>
-          <% for( let date of url.visitDates ) { %>
-            <%= date %><br>
-          <% } %>
-        </p>
+        <p>Unique Visits: <%= url.uniqueVisits %></p>
+        <div class="row">
+          <div class="col">
+            <p>Unique Visitors:<br>
+              <% for( let id of url.uniqueVisitors ) { %>
+                <%= id %><br>
+              <% } %>
+            </p>
+          </div>
+          <div class="col">
+            <p>Visit Dates:<br>
+              <% for( let date of url.visitDates ) { %>
+                <%= date %><br>
+              <% } %>
+            </p>
+          </div>
+        </div>
       </div>
       <div class="col">
         <h4>Edit</h4>
-        <form method="POST" action="/urls/<%= shortURL %>">
+        <form method="POST" action="/urls/<%= shortURL %>?_method=PUT">
           <div class="form-group">
             <label for="editUrl">New URL</label>
             <input class="form-control" name="newURL" id="editUrl">
@@ -33,6 +45,9 @@
           <div class="form-group">
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
+        </form>
+        <form method="POST" action="/urls/<%= shortURL %>?_method=DELETE">
+          <button class="btn btn-danger">Delete</button>
         </form>
       </div>
     </div>
