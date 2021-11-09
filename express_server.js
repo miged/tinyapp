@@ -1,14 +1,14 @@
+const { getUser, generateRandomString, urlsForUser } = require('./helpers');
+
 const express = require('express');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
+const cookieSession = require('cookie-session');
 const app = express();
 const PORT = 8080; // default port 8080
 
-const bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
-
-const bcrypt = require('bcryptjs');
-
-const cookieSession = require('cookie-session');
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: 'session',
@@ -18,8 +18,7 @@ app.use(
   })
 );
 
-const { getUser, generateRandomString, urlsForUser } = require('./helpers');
-
+// URL Database
 const urlDatabase = {
   b6UTxQ: {
     longURL: 'https://lighthouselabs.ca',
@@ -31,6 +30,7 @@ const urlDatabase = {
   },
 };
 
+// User Database
 const users = {
   userRandomID: {
     id: 'userRandomID',
@@ -39,6 +39,8 @@ const users = {
   },
 };
 
+
+// Get URL database in JSON format
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
@@ -60,6 +62,7 @@ app.get('/urls/new', (req, res) => {
   const templateVars = { user: users[req.session.user_id] };
 
   if (!templateVars.user) {
+    // redirect if not logged in
     res.redirect('/login');
   } else {
     res.render('urls_new', templateVars);
@@ -68,6 +71,7 @@ app.get('/urls/new', (req, res) => {
 
 app.post('/urls', (req, res) => {
   if (!req.session.user_id) {
+    // send error if not logged in
     res.status(403).send('Not authorized');
   } else {
     const shortUrl = generateRandomString();
