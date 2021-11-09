@@ -94,6 +94,8 @@ app.post('/urls', (req, res) => {
     longURL: req.body.longURL,
     userID: req.session.user_id,
     visits: 0,
+    uniqueVisits: 0,
+    uniqueVisitors: [],
     visitDates: [],
     dateCreated: dayjs().format('YYYY-MM-DD hh:mm:ss A')
   };
@@ -159,6 +161,17 @@ app.get('/u/:shortURL', (req, res) => {
 
   // increment number of visits
   url.visits += 1;
+
+  // generate visitor id
+  if (!req.session.visitor_id) {
+    req.session.visitor_id = generateRandomString(8);
+  }
+
+  // check if visitor has visited url already
+  if (!url.uniqueVisitors.includes(req.session.visitor_id)) {
+    url.uniqueVisits += 1;
+    url.uniqueVisitors.push(req.session.visitor_id);
+  }
 
   // keep track of date visited
   const now = dayjs().format('YYYY-MM-DD hh:mm:ss A');
