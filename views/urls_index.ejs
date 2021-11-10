@@ -27,7 +27,7 @@
         <tbody>
           <% for(let url in urls) { %>
             <tr>
-              <td><%= url %></td>
+              <td><a href="/u/<%= url %>"><%= url %></a></td>
               <td><%= urls[url].longURL %></td>
               <td><%= urls[url].visits %></td>
               <td><%= urls[url].uniqueVisits %></td>
@@ -44,7 +44,7 @@
       </table>
       <a href="/urls/new" class="btn btn-primary">+ Create New Short Link</a>
     <% } else { %>
-      <h3>Please log in or create an account.</h3>
+      <h3 class="text-center">Please log in or create an account.</h3>
     <% } %>
   </main>
   <!-- Bootstrap JS -->

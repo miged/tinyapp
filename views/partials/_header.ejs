@@ -12,7 +12,7 @@
     </div>
     <div class="navbar-nav">
       <% if (user) { %>
-        <div class="mr-4 my-2">Logged in as <%= user.email %>!</div>
+        <div class="text-light mr-4 my-2">Logged in as <%= user.email %>!</div>
         <a class="nav-item nav-link" href="/logout">Logout</a>
       <% } else { %>
         <a class="nav-item nav-link" href="/login">Log in</a>
