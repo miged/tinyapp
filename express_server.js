@@ -1,4 +1,5 @@
 const { getUser, generateRandomString, urlsForUser } = require('./helpers');
+const { urlDatabase, users } = require('./db');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,6 +9,7 @@ const methodOverride = require('method-override')
 const dayjs = require('dayjs');
 const app = express();
 const PORT = 8080; // default port 8080
+const dateFormat = 'YYYY-MM-DD hh:mm:ss A';
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,28 +24,6 @@ app.use(
 // override with POST having ?_method=DELETE
 app.use(methodOverride('_method'))
 
-// URL Database
-const urlDatabase = {
-  b6UTxQ: {
-    longURL: 'https://lighthouselabs.ca',
-    userID: 'aJ48lW',
-    visits: 34,
-    uniqueVisits: 20,
-    uniqueVisitors: [],
-    visitDates: [],
-    dateCreated: new Date(),
-  }
-};
-
-// User Database
-const users = {
-  aJ48lW: {
-    id: 'aJ48lW',
-    email: 'user@example.com',
-    password: bcrypt.hashSync('purple-monkey-dinosaur'),
-  },
-};
-
 app.get('/', (req, res) => {
   if (users[req.session.user_id]) {
     res.redirect('/urls');
@@ -51,7 +31,6 @@ app.get('/', (req, res) => {
     res.redirect('/login');
   }
 });
-
 
 // Get URL database in JSON format
 app.get('/urls.json', (req, res) => {
@@ -97,7 +76,7 @@ app.post('/urls', (req, res) => {
     uniqueVisits: 0,
     uniqueVisitors: [],
     visitDates: [],
-    dateCreated: dayjs().format('YYYY-MM-DD hh:mm:ss A')
+    dateCreated: dayjs().format(dateFormat)
   };
 
   res.redirect(`/urls/${shortUrl}`);
@@ -179,7 +158,7 @@ app.get('/u/:shortURL', (req, res) => {
   }
 
   // keep track of date visited
-  const now = dayjs().format('YYYY-MM-DD hh:mm:ss A');
+  const now = dayjs().format(dateFormat);
   url.visitDates.push(now);
 
   res.redirect(url.longURL);
