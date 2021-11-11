@@ -87,17 +87,17 @@ app.get('/urls/:shortURL', (req, res) => {
   const user = users[req.session.user_id];
   const url = urlDatabase[req.params.shortURL];
 
-  // check if not logged in
+  // redirect if not logged in
   if (!user) {
     return res.redirect('/login', 403);
   }
 
-  // check if url exists
+  // redirect if url exists
   if (!url) {
     return res.redirect('/urls', 404);
   }
 
-  // check if url doesn't belong to user
+  // redirect if url doesn't belong to user
   if (req.session.user_id !== url.userID) {
     return res.redirect('/urls', 403);
   }
