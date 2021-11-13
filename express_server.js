@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session');
-const methodOverride = require('method-override')
+const methodOverride = require('method-override');
 const dayjs = require('dayjs');
 const app = express();
 const PORT = 8080; // default port 8080
@@ -22,7 +22,7 @@ app.use(
   })
 );
 // override with POST having ?_method=DELETE
-app.use(methodOverride('_method'))
+app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
   if (users[req.session.user_id]) {
